@@ -11,10 +11,10 @@ const api = require('./routes/api');
 
 const app = express();
 
-app.use(logger('common', {
+/*app.use(logger('common', {
   stream: fs.createWriteStream('./access.log', {flags: 'a'})
 }));
-app.use(logger('dev'));
+app.use(logger('dev'));*/
 
 // Parsers for POST data
 app.use(bodyParser.json());
