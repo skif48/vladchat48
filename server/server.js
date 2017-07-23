@@ -35,6 +35,7 @@ app.get('*', (req, res) => {
  * Get port from environment and store in Express.
  */
 const port = process.env.PORT || '3000';
+console.log(port);
 app.set('port', port);
 
 /**
