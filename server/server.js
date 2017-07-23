@@ -16,18 +16,6 @@ const server = http.Server(app);
 
 const io = require('socket.io')(server);
 
-io.on('connection', (socket) => {
-  console.log('user connected');
-
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-
-  socket.on('add-message', (message) => {
-    io.emit('message', {type:'new-message', text: message});
-  });
-});
-
 app.use(logger('common', {
   stream: fs.createWriteStream('./access.log', {flags: 'a'})
 }));
@@ -59,11 +47,19 @@ app.set('port', port);
  */
 server.listen(port, () => console.log(`API running on localhost:${port}`));
 
-io.on('connection', (socket) => {
+let apiNamespace = io.of('/api');
+apiNamespace.on('connection', (socket) => {
   console.log('user connected');
+
+  socket.emit('hello', {data: 'hello'});
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
+  });
+
+  socket.on('error', function(data){
+    console.log('error');
+    console.log(data);
   });
 
   socket.on('add-message', (message) => {
