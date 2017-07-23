@@ -1,20 +1,37 @@
 // Get dependencies
 const express = require('express');
 const path = require('path');
-const http = require('http');
+
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+
 
 // Get our API routes
 const api = require('./routes/api');
 
 const app = express();
+const http = require('http');
+const server = http.Server(app);
 
-/*app.use(logger('common', {
+const io = require('socket.io')(server);
+
+io.on('connection', (socket) => {
+  console.log('user connected');
+
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+
+  socket.on('add-message', (message) => {
+    io.emit('message', {type:'new-message', text: message});
+  });
+});
+
+app.use(logger('common', {
   stream: fs.createWriteStream('./access.log', {flags: 'a'})
 }));
-app.use(logger('dev'));*/
+app.use(logger('dev'));
 
 // Parsers for POST data
 app.use(bodyParser.json());
@@ -37,13 +54,20 @@ app.get('*', (req, res) => {
 const port = process.env.PORT || '3000';
 console.log(port);
 app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-const server = http.createServer(app);
-
 /**
  * Listen on provided port, on all network interfaces.
  */
 server.listen(port, () => console.log(`API running on localhost:${port}`));
+
+io.on('connection', (socket) => {
+  console.log('user connected');
+
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+
+  socket.on('add-message', (message) => {
+    console.log('add message');
+    io.emit('message', {type:'new-message', text: message});
+  });
+});
