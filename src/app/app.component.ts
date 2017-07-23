@@ -16,12 +16,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.socket = io(this.url);
-    this.socket.on('message', (data) => {
-      console.log(data);
-    });
   }
 
   sendMessage(message) {
-    this.socket.emit('add-message', message);
+    this.socket.emit('add-message', {message});
   }
 }
