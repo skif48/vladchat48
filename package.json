@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "preinstall": "npm install -g angular-cli",
-    "start": "ng build && node server/server.js",
+    "postinstall": "ng build",
+    "start": "node server/server.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
