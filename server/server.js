@@ -1,59 +1,36 @@
-// Get dependencies
 const express = require('express');
 const path = require('path');
-
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-
-
-// Get our API routes
+const http = require('http');
+const io = require('socket.io');
 const api = require('./routes/api');
 
 const app = express();
-const http = require('http');
 const server = http.Server(app);
+const ioClient = io(server);
 
-const io = require('socket.io')(server);
+const API_ROUTE = '/api';
+const PORT = process.env.PORT || '3000';
 
-app.use(logger('common', {
+app.use(API_ROUTE, logger('common', {
   stream: fs.createWriteStream('./access.log', {flags: 'a'})
 }));
-app.use(logger('dev'));
+app.use(API_ROUTE, logger('dev'));
 
-// Parsers for POST data
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// Point static path to dist
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Set our api routes
-app.use('/api', api);
-
-// Catch all other routes and return the index file
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
-});
-
-/**
- * Get port from environment and store in Express.
- */
-const port = process.env.PORT || '3000';
-console.log(port);
-app.set('port', port);
-/**
- * Listen on provided port, on all network interfaces.
- */
-server.listen(port, () => console.log(`API running on localhost:${port}`));
-
-let apiNamespace = io.of('/api');
+let apiNamespace = ioClient.of(API_ROUTE);
 apiNamespace.on('connection', (socket) => {
   console.log('user connected');
 
   socket.emit('hello', {data: 'hello'});
 
-  socket.on('disconnect', function(){
+  socket.on('disconnect', function() {
     console.log('user disconnected');
   });
 
@@ -64,6 +41,16 @@ apiNamespace.on('connection', (socket) => {
 
   socket.on('add-message', (message) => {
     console.log('add message');
-    io.emit('message', {type:'new-message', text: message});
+    ioClient.emit('message', {type:'new-message', text: message});
   });
 });
+
+app.use(API_ROUTE, api);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+});
+
+app.set('port', PORT);
+
+server.listen(PORT, () => console.log(`Server successfully started on ${PORT}`));
