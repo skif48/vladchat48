@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const exampleApi = require('../service/ExampleService/index');
 
-/* GET api listing. */
-router.get('/', (req, res) => {
-  res.send('api works');
-});
+router.use('/example', exampleApi.router);
 
 module.exports = router;
