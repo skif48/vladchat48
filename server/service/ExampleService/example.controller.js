@@ -1,12 +1,12 @@
 'use strict';
 const ExampleServiceClass = require('./example.service');
-const ExampleService = new ExampleServiceClass();
+const ExampleService = new ExampleServiceClass('something');
 
 function getSomething(req, res) {
   Promise.resolve()
-    .then(ExampleService.getSomething)
+    .then(ExampleService.getSomething())
     .then((something) => {
-      res.send(something);
+      res.send({something});
     });
 }
 

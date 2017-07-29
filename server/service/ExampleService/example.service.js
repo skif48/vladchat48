@@ -1,9 +1,10 @@
 class ExampleService {
-
-  constructor() {}
+  constructor(something) {
+    this.something = something;
+  }
 
   getSomething() {
-    return Promise.resolve('something');
+    return () => this.something;
   }
 }
 
