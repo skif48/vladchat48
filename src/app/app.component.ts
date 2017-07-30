@@ -9,13 +9,22 @@ import * as io from 'socket.io-client';
 export class AppComponent implements OnInit {
   private socket;
   private url = window.location + 'api';
+  public gitHubLogo = 'assets/GitHub-Mark-32px.png';
+  public linkedInLogo = 'assets/Logo-Black-34px-R.png';
+  public isLoggedIn = false;
 
-  constructor() {
-    console.log(this.url);
-  }
+  constructor() {}
 
   ngOnInit(): void {
     this.socket = io(this.url);
+  }
+
+  public redirectToGitHub() {
+    window.open('https://github.com/skif48/vladchat48/');
+  }
+
+  public redirectToLinkedIn() {
+    window.open('https://www.linkedin.com/in/vladyslav-usenko/');
   }
 
   sendMessage(message) {

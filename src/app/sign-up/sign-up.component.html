@@ -1,0 +1,18 @@
+<div class="container">
+  <div class="row">
+    <form [formGroup]="signUpForm" (submit)="onSubmit()" novalidate>
+      <div class="form-group">
+        <label for="email">Email address:</label>
+        <input type="email" class="form-control" id="email" formControlName="email">
+      </div>
+      <div class="form-group">
+        <label for="pwd">Password:</label>
+        <input type="password" class="form-control" id="pwd" formControlName="password">
+      </div>
+      <div class="checkbox">
+        <label><input type="checkbox"> Remember me</label>
+      </div>
+      <button class="btn btn-default">Submit</button>
+    </form>
+  </div>
+</div>
