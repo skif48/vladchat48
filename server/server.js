@@ -6,6 +6,8 @@ const logger = require('morgan');
 const http = require('http');
 const io = require('socket.io');
 const api = require('./routes/api');
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize('postgres://vladyslav:48bonjovi@localhost:5432/vladchat');
 
 const app = express();
 const server = http.Server(app);
@@ -13,6 +15,15 @@ const ioClient = io(server);
 
 const API_ROUTE = '/api';
 const PORT = process.env.PORT || '3000';
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 app.use(API_ROUTE, logger('common', {
   stream: fs.createWriteStream('./access.log', {flags: 'a'})
