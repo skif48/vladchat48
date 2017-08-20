@@ -1,0 +1,7 @@
+{
+  "user": "vladyslav",
+  "dbName": "vladchat",
+  "port": 5432,
+  "host": "localhost",
+  "password": "48bonjovi"
+}
