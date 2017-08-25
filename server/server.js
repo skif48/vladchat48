@@ -16,6 +16,8 @@ const ioClient = io(server);
 const API_ROUTE = '/api';
 const PORT = process.env.PORT || '3000';
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+
 establishDBConnection()
   .then(() => {
     User.create({email: 'vu4848@gmail.com', nickname: 'skif48', password: 'password', role: 'vlados'})

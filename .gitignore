@@ -42,3 +42,6 @@ testem.log
 Thumbs.db
 /access.log
 /package-lock.json
+
+# Log files
+/server/db/logs/
