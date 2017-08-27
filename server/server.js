@@ -20,7 +20,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 
 establishDBConnection()
   .then(() => {
-    User.create({email: 'vu4848@gmail.com', nickname: 'skif48', password: 'password', role: 'vlados'})
+    User.create({email: 'vu4848@gmail.com', nickname: 'skif48', password: 'password', role: 'admin'})
       .then(() => console.log('User successfully created'))
       .catch((err) => console.log('Error during user creation: ', err));
   });
