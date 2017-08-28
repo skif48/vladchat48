@@ -44,3 +44,4 @@ Thumbs.db
 
 # Log files
 /server/db/logs/
+/v8log

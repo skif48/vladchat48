@@ -1,5 +1,6 @@
 "use strict";
-const UserServiceClass = require('./user.service');
+const UserService = require('./user.service');
+const UserRepository = require('./user.repository');
 const User = require('../../db/models/User.model').User;
 const NicknameIsTakenError = require('../../errors/entityErrors/user/NicknameIsTakenError');
 const EmailIsTakenError = require('../../errors/entityErrors/user/EmailIsTakenError');
@@ -7,12 +8,13 @@ const EntityNotFoundError = require('../../errors/entityErrors/EntityNotFoundErr
 const ValidationError = require('sequelize/lib/errors/').ValidationError;
 const UserAlreadyExistsError = require('../../errors/entityErrors/user/UserAlreadyExistsError');
 
-const UserService = new UserServiceClass(User);
+const userRepository = new UserRepository(User);
+const userService = new UserService(userRepository);
 
 async function getUserById(req, res) {
   const userId = req.params.userId;
   try {
-    const user = await UserService.getUserById(userId);
+    const user = await userService.getUserById(userId);
     res.json(user);
   } catch(err) {
     if(err instanceof EntityNotFoundError) {
@@ -32,7 +34,7 @@ async function createUser(req, res) {
   };
 
   try {
-    const user = await UserService.createUser(userData);
+    const user = await userService.createUser(userData);
     res.json(user);
   } catch(err) {
     if(err instanceof ValidationError) {
@@ -54,7 +56,7 @@ async function updateNickName(req, res) {
   const userId = req.body.userId;
 
   try {
-    const newUser = await UserService.updateNickname(userId, newNickname);
+    const newUser = await userService.updateNickname(userId, newNickname);
     res.json(newUser);
   } catch (err) {
     if(err instanceof NicknameIsTakenError) {
@@ -66,6 +68,8 @@ async function updateNickName(req, res) {
       res.sendStatus(404);
       return;
     }
+
+    console.log(err);
 
     res.sendStatus(500);
   }

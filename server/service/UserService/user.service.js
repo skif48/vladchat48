@@ -4,13 +4,13 @@ const EmailIsTakenError = require('../../errors/entityErrors/user/EmailIsTakenEr
 const EntityNotFoundError = require('../../errors/entityErrors/EntityNotFoundError');
 const UserAlreadyExistsError = require('../../errors/entityErrors/user/UserAlreadyExistsError');
 
-class ExampleService {
+class UserService {
   constructor(userRepository) {
     this.userRepository = userRepository;
   }
 
   async getUserById(id) {
-    const user = await this.userRepository.findById(id).then(user => user.dataValues);
+    const user = await this.userRepository.findUserById(id).then(user => user.dataValues);
     if(user === null) {
       throw new EntityNotFoundError();
     }
@@ -21,7 +21,7 @@ class ExampleService {
   }
 
   async createUser(userData) {
-    await this.userRepository.find({where: {$or: [{nickname: userData.nickname}, {email: userData.email}]}})
+    await this.userRepository.findByNicknameOrEmail(userData.nickname, userData.email)
       .then(user => {
         if(user !== null) {
           throw new UserAlreadyExistsError();
@@ -44,21 +44,20 @@ class ExampleService {
       throw new Error('nickname must be at least 4 characters');
     }
 
-    const me = await this.userRepository.findById(userId);
-
-    if(me === null) {
-      throw new EntityNotFoundError();
-    }
-
-    await this.userRepository.findOne({where: {nickname : newNickname}})
+    await this.userRepository.findByNickname(newNickname)
       .then(user => {
         if(user !== null) {
           throw new NicknameIsTakenError();
         }
       });
 
-    me.setDataValue('nickname', newNickname);
-    await me.save();
+    let me = await this.userRepository.findUserById(userId);
+
+    if(me === null) {
+      throw new EntityNotFoundError();
+    }
+
+    me = await this.userRepository.update(me, {nickname: newNickname});
 
     return {
       email: me.dataValues.email,
@@ -68,4 +67,4 @@ class ExampleService {
   }
 }
 
-module.exports = ExampleService;
+module.exports = UserService;
