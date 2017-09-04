@@ -69,8 +69,6 @@ async function updateNickName(req, res) {
       return;
     }
 
-    console.log(err);
-
     res.sendStatus(500);
   }
 }

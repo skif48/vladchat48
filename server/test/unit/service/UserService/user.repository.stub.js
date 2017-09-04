@@ -10,7 +10,7 @@ UserRepositoryStub.getUserDAO = () => this.userDAO;
 
 UserRepositoryStub.setUserDAO = userDAO => this.userDAO = userDAO;
 
-UserRepositoryStub.findUserById = id => Promise.resolve(this.userDAO.get(id) || null);
+UserRepositoryStub.findUserById = id => Promise.resolve(this.userDAO.get(id) || {dataValues: {}});
 
 UserRepositoryStub.findByNickname = nickname => {
   for(let user of this.userDAO.values()) {
@@ -33,16 +33,16 @@ UserRepositoryStub.findByEmail = email => {
 UserRepositoryStub.findByNicknameOrEmail = (nickname, email) => {
   for(let user of this.userDAO.values()) {
     if(user.nickname === nickname || user.email === email) {
-      return Promise.resolve(user);
+      return Promise.resolve({dataValues: user});
     }
   }
-  return null;
+  return Promise.resolve(null);
 };
 
 UserRepositoryStub.create = userData => {
   userData.id = this.userDAO.size + 1;
   this.userDAO.set(userData.id, userData);
-  return Promise.resolve(userData);
+  return Promise.resolve({dataValues: this.userDAO.get(userData.id)});
 };
 
-console.log(UserRepositoryStub);
+module.exports = UserRepositoryStub;

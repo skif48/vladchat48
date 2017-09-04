@@ -60,6 +60,7 @@ class UserService {
     me = await this.userRepository.update(me, {nickname: newNickname});
 
     return {
+      id: me.dataValues.id,
       email: me.dataValues.email,
       nickname: me.dataValues.nickname,
       role: me.dataValues.role
